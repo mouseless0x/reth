@@ -26,7 +26,7 @@ use reth_eth_wire::{
 use reth_ethereum_forks::{ForkFilter, ForkId, ForkTransition, Head};
 use reth_metrics::common::mpsc::MeteredPollSender;
 use reth_network_api::{PeerRequest, PeerRequestSender};
-use reth_network_peers::PeerId;
+use reth_network_peers::{pk2id, PeerId};
 use reth_network_types::SessionsConfig;
 use reth_tasks::Runtime;
 use rustc_hash::FxHashMap;
@@ -129,6 +129,21 @@ pub struct SessionManager<N: NetworkPrimitives> {
 }
 
 // === impl SessionManager ===
+
+/// Generates a fresh RLPx identity and matching Hello message for one pending session.
+fn fresh_session_identity(
+    hello_template: &HelloMessageWithProtocols,
+) -> (SecretKey, HelloMessageWithProtocols) {
+    let secret_key = fresh_secret_key();
+    let mut hello = hello_template.clone();
+    hello.id = pk2id(&secret_key.public_key(secp256k1::SECP256K1));
+    (secret_key, hello)
+}
+
+/// Generates a new secp256k1 secret key for a single RLPx handshake.
+fn fresh_secret_key() -> SecretKey {
+    SecretKey::new(&mut rand_08::thread_rng())
+}
 
 impl<N: NetworkPrimitives> SessionManager<N> {
     /// Creates a new empty [`SessionManager`].
@@ -321,8 +336,7 @@ impl<N: NetworkPrimitives> SessionManager<N> {
             let session_id = self.next_id();
             let (disconnect_tx, disconnect_rx) = oneshot::channel();
             let pending_events = self.pending_sessions_tx.clone();
-            let secret_key = self.secret_key;
-            let hello_message = self.hello_message.clone();
+            let (secret_key, hello_message) = fresh_session_identity(&self.hello_message);
             let fork_filter = self.fork_filter.clone();
             let status = self.status;
             let extra_handlers = self.extra_protocols.on_outgoing(remote_addr, remote_peer_id);
