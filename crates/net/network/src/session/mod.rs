@@ -514,6 +514,7 @@ impl<N: NetworkPrimitives> SessionManager<N> {
                 remote_addr,
                 local_addr,
                 peer_id,
+                local_peer_id,
                 capabilities,
                 mut conn,
                 status,
@@ -643,6 +644,7 @@ impl<N: NetworkPrimitives> SessionManager<N> {
 
                 Poll::Ready(SessionEvent::SessionEstablished {
                     peer_id,
+                    local_peer_id,
                     remote_addr,
                     client_version,
                     version,
@@ -768,6 +770,8 @@ pub enum SessionEvent<N: NetworkPrimitives> {
     SessionEstablished {
         /// The remote node's public key
         peer_id: PeerId,
+        /// The local public key used for this session.
+        local_peer_id: PeerId,
         /// The remote node's socket address
         remote_addr: SocketAddr,
         /// The user agent of the remote node, usually containing the client name and version
@@ -1107,6 +1111,7 @@ async fn authenticate_stream<N: NetworkPrimitives>(
 ) -> PendingSessionEvent<N> {
     // Add extra protocols to the hello message
     extra_handlers.retain(|handler| hello.try_add_protocol(handler.protocol()).is_ok());
+    let local_peer_id = hello.id;
 
     // conduct the p2p rlpx handshake and return the rlpx authenticated stream
     let (mut p2p_stream, their_hello) = match stream.handshake(hello).await {
@@ -1225,6 +1230,7 @@ async fn authenticate_stream<N: NetworkPrimitives>(
         remote_addr,
         local_addr,
         peer_id: their_hello.id,
+        local_peer_id,
         capabilities: Arc::new(Capabilities::from(their_hello.capabilities)),
         status: Arc::new(their_status),
         conn,

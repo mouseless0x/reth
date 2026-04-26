@@ -277,6 +277,8 @@ pub enum PendingSessionEvent<N: NetworkPrimitives> {
         local_addr: Option<SocketAddr>,
         /// The remote node's public key
         peer_id: PeerId,
+        /// The local public key used for this session.
+        local_peer_id: PeerId,
         /// All capabilities the peer announced
         capabilities: Arc<Capabilities>,
         /// The Status message the peer sent for the `eth` handshake

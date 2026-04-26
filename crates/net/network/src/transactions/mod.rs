@@ -3018,6 +3018,7 @@ mod tests {
 
         let session_info = SessionInfo {
             peer_id,
+            local_peer_id: PeerId::random(),
             remote_addr: SocketAddr::new(IpAddr::V4(Ipv4Addr::LOCALHOST), 0),
             client_version: Arc::from(""),
             capabilities: Arc::new(vec![].into()),

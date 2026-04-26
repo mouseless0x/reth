@@ -124,6 +124,7 @@ impl<N: NetworkPrimitives> Swarm<N> {
         match event {
             SessionEvent::SessionEstablished {
                 peer_id,
+                local_peer_id,
                 remote_addr,
                 client_version,
                 capabilities,
@@ -144,6 +145,7 @@ impl<N: NetworkPrimitives> Swarm<N> {
                 );
                 Some(SwarmEvent::SessionEstablished {
                     peer_id,
+                    local_peer_id,
                     remote_addr,
                     client_version,
                     capabilities,
@@ -397,6 +399,7 @@ pub(crate) enum SwarmEvent<N: NetworkPrimitives = EthNetworkPrimitives> {
     },
     SessionEstablished {
         peer_id: PeerId,
+        local_peer_id: PeerId,
         remote_addr: SocketAddr,
         client_version: Arc<str>,
         capabilities: Arc<Capabilities>,

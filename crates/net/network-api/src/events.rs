@@ -57,6 +57,8 @@ impl Stream for PeerEventStream {
 pub struct SessionInfo {
     /// The identifier of the peer to which a session was established.
     pub peer_id: PeerId,
+    /// The local public key used for this session.
+    pub local_peer_id: PeerId,
     /// The remote addr of the peer to which a session was established.
     pub remote_addr: SocketAddr,
     /// The client version of the peer to which a session was established.

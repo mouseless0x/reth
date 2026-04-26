@@ -803,6 +803,7 @@ impl<N: NetworkPrimitives> NetworkManager<N> {
             }
             SwarmEvent::SessionEstablished {
                 peer_id,
+                local_peer_id,
                 remote_addr,
                 client_version,
                 capabilities,
@@ -818,6 +819,7 @@ impl<N: NetworkPrimitives> NetworkManager<N> {
                     ?remote_addr,
                     %client_version,
                     ?peer_id,
+                    ?local_peer_id,
                     ?total_active,
                     kind=%direction,
                     peer_enode=%NodeRecord::new(remote_addr, peer_id),
@@ -846,6 +848,7 @@ impl<N: NetworkPrimitives> NetworkManager<N> {
                     .unwrap_or_default();
                 let session_info = SessionInfo {
                     peer_id,
+                    local_peer_id,
                     remote_addr,
                     client_version,
                     capabilities,
