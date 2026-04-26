@@ -67,6 +67,8 @@ pub struct SessionInfo {
     pub status: Arc<UnifiedStatus>,
     /// Negotiated eth version of the session.
     pub version: EthVersion,
+    /// The direction of the session.
+    pub direction: crate::Direction,
     /// The kind of peer this session represents
     pub peer_kind: PeerKind,
 }

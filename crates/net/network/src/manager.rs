@@ -851,6 +851,7 @@ impl<N: NetworkPrimitives> NetworkManager<N> {
                     capabilities,
                     status,
                     version,
+                    direction,
                     peer_kind,
                 };
 

@@ -3023,6 +3023,7 @@ mod tests {
             capabilities: Arc::new(vec![].into()),
             status: Arc::new(Default::default()),
             version: EthVersion::Eth68,
+            direction: Direction::Outgoing(peer_id),
             peer_kind: PeerKind::Basic,
         };
         let messages: PeerRequestSender<PeerRequest> = PeerRequestSender::new(peer_id, tx);
